@@ -21,3 +21,8 @@ Build
 
     Compile from within the container:
     $ rebar3 compile
+
+Build and Run
+-----
+   running `./dev.sh` will start the development Docker image
+   and expose port 8080.
