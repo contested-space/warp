@@ -34,7 +34,7 @@ handle_call({lookup, CharacterID}, _From, #state{characters = Characters} = Stat
         undefined ->
             % error atom feels weird here, especially when checked at spawning time
             {reply, {error, character_not_found}, State};
-        {ok, CharacterPid} = Res ->
+        {ok, _CharacterPid} = Res ->
             {reply, Res, State}
     end;
 handle_call({lookup, _}, _From, State) ->
@@ -45,7 +45,7 @@ handle_call(_, _From, State) ->
 handle_info(_, State) ->
     {noreply, State}.
 
-terminate(_Reason, State) ->
+terminate(_Reason, _State) ->
     ok.
 
 code_change(_OldVsn, State, _Extra) ->

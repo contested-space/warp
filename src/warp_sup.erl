@@ -35,7 +35,13 @@ init([]) ->
                restart => permanent,
                type => worker,
                modules => [warp_character_server]},
-    ChildSpecs = [CharacterServer],
+    SpaceObjectServer = #{id => warp_space_object_server,
+               start => {warp_space_object_server, start_link, []},
+               shutdown => 2000,
+               restart => permanent,
+               type => worker,
+               modules => [warp_space_object_server]},
+    ChildSpecs = [CharacterServer, SpaceObjectServer],
     {ok, {SupFlags, ChildSpecs}}.
 
 %% internal functions

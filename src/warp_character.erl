@@ -58,8 +58,8 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-spawn(CharacterID) ->
-    gen_server:start(?MODULE, [CharacterID], []).
+spawn(CharacterId) ->
+    gen_server:start(?MODULE, [CharacterId], []).
 
-get_state(CharacterPID) ->
-    gen_server:call(CharacterPID, get_state).
+get_state(CharacterPid) ->
+    gen_server:call(CharacterPid, get_state).
