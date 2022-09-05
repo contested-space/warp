@@ -2,70 +2,21 @@
 
 -behaviour(gen_server).
 
--export([init/1,
-         handle_cast/2,
-         handle_call/3,
-         handle_info/2,
-         terminate/2,
-         code_change/3]).
-
--export([spawn/1,
-         get_state/1]).
-
+-export([init/1, handle_cast/2, handle_call/3, handle_info/2, terminate/2, code_change/3]).
+-export([spawn/1, get_state/1]).
 
 %% TODO: have these names come from ingesting config files
--define(LETTERS, [<<"Alpha">>,
-                  <<"Beta">>,
-                  <<"Gamma">>,
-                  <<"Delta">>,
-                  <<"Epsilon">>,
-                  <<"Varepsilon">>,
-                  <<"Zeta">>,
-                  <<"Eta">>,
-                  <<"Theta">>,
-                  <<"Iota">>,
-                  <<"Kappa">>,
-                  <<"Lambda">>,
-                  <<"Mu">>,
-                  <<"Nu">>,
-                  <<"Xi">>,
-                  <<"Omicron">>,
-                  <<"Pi">>,
-                  <<"Rho">>,
-                  <<"Sigma">>,
-                  <<"Tau">>,
-                  <<"Upsilon">>,
-                  <<"Phi">>,
-                  <<"Varphi">>,
-                  <<"Chi">>,
-                  <<"Psi">>,
-                  <<"Omega">>]).
+-define(LETTERS,
+        [ << "Alpha" >> , << "Beta" >> , << "Gamma" >> , << "Delta" >> , << "Epsilon" >> , << "Varepsilon" >> , << "Zeta" >> , << "Eta" >> , << "Theta" >> , << "Iota" >> , << "Kappa" >> , << "Lambda" >> , << "Mu" >> , << "Nu" >> , << "Xi" >> , << "Omicron" >> , << "Pi" >> , << "Rho" >> , << "Sigma" >> , << "Tau" >> , << "Upsilon" >> , << "Phi" >> , << "Varphi" >> , << "Chi" >> , << "Psi" >> , << "Omega" >> ]).
+-define(NAMES,
+        [ << "Andromeda" >> , << "Antila" >> , << "Apus" >> , << "Aquarius" >> , << "Aquila" >> , << "Ara" >> , << "Aries" >> , << "Auriga" >> , << "Boötes" >> , << "Caelum" >> , << "Camelopardalis" >> , << "Canes Venatici" >> , << "Canis Major" >> , << "Canis Minor" >> , << "Capricornus" >> , << "Carina" >> , << "Cassiopeia" >> , << "Centauri" >> ]).
 
--define(NAMES, [<<"Andromeda">>,
-                <<"Antila">>,
-                <<"Apus">>,
-                <<"Aquarius">>,
-                <<"Aquila">>,
-                <<"Ara">>,
-                <<"Aries">>,
-                <<"Auriga">>,
-                <<"Boötes">>,
-                <<"Caelum">>,
-                <<"Camelopardalis">>,
-                <<"Canes Venatici">>,
-                <<"Canis Major">>,
-                <<"Canis Minor">>,
-                <<"Capricornus">>,
-                <<"Carina">>,
-                <<"Cassiopeia">>,
-                <<"Centauri">>]).
-
-
--record(state, {name :: binary(),
-                type :: planet | asteroid | starbase,
-                affiliation :: none | binary(),
-                position :: {non_neg_integer(), non_neg_integer(), non_neg_integer()},
-                resources :: []}).
+-record(state,
+        {name :: binary(),
+         type :: planet | asteroid | starbase,
+         affiliation :: none | binary(),
+         position :: {non_neg_integer(), non_neg_integer(), non_neg_integer()},
+         resources :: []}).
 
 %% Yeah I can't keep doing that kind of argument nonsense, I need to clean my stuff up ASAP
 init([Position]) ->
@@ -82,15 +33,10 @@ init([Position]) ->
 handle_cast(_, State) ->
     {noreply, State}.
 
-handle_call(get_state, _From, #state{name = Name,
-                                     type = Type,
-                                     affiliation = Affiliation,
-                                     position = Pos,
-                                     resources = Res} = State) ->
-    StateMap = #{name => Name,
-                 type => Type,
-                 affiliation => Affiliation,
-                 resources => Res},
+handle_call(get_state,
+            _From,
+            #state{name = Name, type = Type, affiliation = Affiliation, position = Pos, resources = Res} = State) ->
+    StateMap = #{name => Name, type => Type, affiliation => Affiliation, resources => Res},
     {reply, {ok, StateMap}, State};
 handle_call(_, _From, State) ->
     {reply, {error, undefined_call}, State}.
@@ -109,3 +55,4 @@ spawn(Position) ->
 
 get_state(SpaceObjectPid) ->
     gen_server:call(SpaceObjectPid, get_state).
+

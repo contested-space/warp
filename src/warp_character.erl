@@ -2,15 +2,8 @@
 
 -behaviour(gen_server).
 
--export([init/1,
-         handle_cast/2,
-         handle_call/3,
-         handle_info/2,
-         terminate/2,
-         code_change/3]).
-
--export([spawn/1,
-         get_state/1]).
+-export([init/1, handle_cast/2, handle_call/3, handle_info/2, terminate/2, code_change/3]).
+-export([spawn/1, get_state/1]).
 
 %% todo: use a regular record as private state, and provide
 %% subset of that as a map or proplist via get_state (or get_status)
@@ -63,3 +56,4 @@ spawn(CharacterId) ->
 
 get_state(CharacterPid) ->
     gen_server:call(CharacterPid, get_state).
+

@@ -12,18 +12,13 @@
 start(_StartType, _StartArgs) ->
     % todo: define an API that makes some sort of sense
     % seriously that /x/y/z is probably literally illegal
-    Dispatch = cowboy_router:compile([{'_', [
-        {"/space_objects/:x/:y/:z", http_space_object_lookup_handler, []},
-        {"/space_objects/scan/:x/:y/:z/:r", http_space_object_scan_handler, []},
-        {"/characters/:character_id", http_character_lookup_handler, []},
-        {"/characters/spawn/:character_id", http_character_spawn_handler, []}]}]),
-
+    Dispatch = cowboy_router:compile([{'_',
+                                       [{"/space_objects/:x/:y/:z", http_space_object_lookup_handler, []},
+                                        {"/space_objects/scan/:x/:y/:z/:r", http_space_object_scan_handler, []},
+                                        {"/characters/:character_id", http_character_lookup_handler, []},
+                                        {"/characters/spawn/:character_id", http_character_spawn_handler, []}]}]),
     % todo: configurable port
-    {ok, _} = cowboy:start_clear(warp_http_listener,
-                                 [{port, 8080}],
-                                 #{env => #{dispatch => Dispatch}}
-                                ),
-
+    {ok, _} = cowboy:start_clear(warp_http_listener, [{port, 8080}], #{env => #{dispatch => Dispatch}}),
     warp_sup:start_link().
 
 stop(_State) ->

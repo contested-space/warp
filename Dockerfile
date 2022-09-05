@@ -5,6 +5,8 @@ LABEL author="Fabien Lamarche-Filion"
 
 EXPOSE 8080
 
+ENV ERL_AFLAGS="-enable-feature all"
+
 RUN useradd -ms /bin/bash warp
 WORKDIR /warp
 USER warp
