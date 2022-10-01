@@ -55,6 +55,7 @@ lookup(SpaceObjectPosition) ->
 
 get_sphere(Coord, Radius) ->
     gen_server:call(?MODULE, {get_sphere, Coord, Radius}).
+
 % private functions
 populate(N) ->
     populate(N, kd_tree:new()).
@@ -64,13 +65,16 @@ populate(N) ->
 populate(0, Tree) ->
     Tree;
 populate(N, Tree) ->
-    try
-        Coord = {rand:uniform(1000), rand:uniform(1000), rand:uniform(1000)},
+    try Coord = {rand:uniform(1000), rand:uniform(1000), rand:uniform(1000)},
         {ok, Pid} = warp_space_object:spawn(Coord),
         Info = warp_space_object:get_state(Pid),
         io:format("Space object created: ~p~n", [Info]),
         NewTree = kd_tree:insert(Coord, Pid, Tree)
-    of _ ->             populate(N - 1, NewTree)
-    catch _:_ -> % just retry when there is already something there
-            populate(N, Tree)
+    of
+      _ ->
+          populate(N - 1, NewTree)
+    catch
+      _:_ -> % just retry when there is already something there
+          populate(N, Tree)
     end.
+

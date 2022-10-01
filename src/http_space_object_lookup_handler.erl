@@ -14,7 +14,7 @@ init(Req0, State) ->
                 cowboy_req:reply(204, #{}, <<>>, Req0);
             {ok, SpaceObjectPid} ->
                 {ok, SpaceObjectState} = warp_space_object:get_state(SpaceObjectPid),
-                StateJson = jiffy:encode(SpaceObjectState),
+                StateJson = utils:ensure_binary(jiffy:encode(SpaceObjectState)),
                 cowboy_req:reply(200, #{}, <<StateJson/binary, "\n">>, Req0)
           end,
     {ok, Req, State}.

@@ -9,7 +9,7 @@
 -define(LETTERS,
         [ << "Alpha" >> , << "Beta" >> , << "Gamma" >> , << "Delta" >> , << "Epsilon" >> , << "Varepsilon" >> , << "Zeta" >> , << "Eta" >> , << "Theta" >> , << "Iota" >> , << "Kappa" >> , << "Lambda" >> , << "Mu" >> , << "Nu" >> , << "Xi" >> , << "Omicron" >> , << "Pi" >> , << "Rho" >> , << "Sigma" >> , << "Tau" >> , << "Upsilon" >> , << "Phi" >> , << "Varphi" >> , << "Chi" >> , << "Psi" >> , << "Omega" >> ]).
 -define(NAMES,
-        [ << "Andromeda" >> , << "Antila" >> , << "Apus" >> , << "Aquarius" >> , << "Aquila" >> , << "Ara" >> , << "Aries" >> , << "Auriga" >> , << "Boötes" >> , << "Caelum" >> , << "Camelopardalis" >> , << "Canes Venatici" >> , << "Canis Major" >> , << "Canis Minor" >> , << "Capricornus" >> , << "Carina" >> , << "Cassiopeia" >> , << "Centauri" >> ]).
+        [ << "Andromeda" >> , << "Antila" >> , << "Apus" >> , << "Aquarius" >> , << "Aquila" >> , << "Ara" >> , << "Aries" >> , << "Auriga" >> , << "Bootes" >> , << "Caelum" >> , << "Camelopardalis" >> , << "Canes Venatici" >> , << "Canis Major" >> , << "Canis Minor" >> , << "Capricornus" >> , << "Carina" >> , << "Cassiopeia" >> , << "Centauri" >> ]).
 
 -record(state,
         {name :: binary(),
@@ -20,9 +20,12 @@
 
 %% Yeah I can't keep doing that kind of argument nonsense, I need to clean my stuff up ASAP
 init([Position]) ->
-    Letter = lists:nth(rand:uniform(length(?LETTERS)), ?LETTERS),
-    Name = lists:nth(rand:uniform(length(?NAMES)), ?NAMES),
-
+    {Letter, Name} = case {length(?LETTERS), length(?NAMES)} of
+                       {N, M} when N > 0 andalso M > 0 ->
+                           {lists:nth(rand:uniform(N), ?LETTERS), lists:nth(rand:uniform(N), ?NAMES)};
+                       _ ->
+                           error(<<"Invalid LETTERS or NAMES list">>)
+                     end,
     InitialState = #state{name = <<Letter/binary, " ", Name/binary>>,
                           type = planet,
                           affiliation = none,
@@ -35,7 +38,7 @@ handle_cast(_, State) ->
 
 handle_call(get_state,
             _From,
-            #state{name = Name, type = Type, affiliation = Affiliation, position = Pos, resources = Res} = State) ->
+            #state{name = Name, type = Type, affiliation = Affiliation, resources = Res} = State) ->
     StateMap = #{name => Name, type => Type, affiliation => Affiliation, resources => Res},
     {reply, {ok, StateMap}, State};
 handle_call(_, _From, State) ->

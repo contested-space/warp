@@ -14,7 +14,7 @@ init(Req0, State) ->
                       cowboy_req:reply(204, #{}, <<>>, Req0);
                   {ok, CharacterPid} ->
                       {ok, CharacterState} = warp_character:get_state(CharacterPid),
-                      StateJson = jiffy:encode(CharacterState),
+                      StateJson = utils:ensure_binary(jiffy:encode(CharacterState)),
                       cowboy_req:reply(200, #{}, <<StateJson/binary, "\n">>, Req0)
                 end
           end,

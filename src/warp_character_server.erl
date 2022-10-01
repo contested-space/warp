@@ -6,7 +6,7 @@
 -export([start_link/0]).
 -export([lookup/1, spawn_character/1]).
 
--record(state, {characters :: [binary()]}).
+-record(state, {characters :: [{binary(), pid()}]}).
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
@@ -16,7 +16,7 @@ init(_) ->
     InitialState = #state{characters = []},
     {ok, InitialState}.
 
-handle_cast({spawn, CharacterID}, #state{characters = Characters} = State) ->
+handle_cast({spawn, CharacterID}, #state{characters = Characters} = State) when is_binary(CharacterID) ->
     CharacterPid = warp_character:spawn(CharacterID),
     {noreply, State#state{characters = [{CharacterID, CharacterPid} | Characters]}};
 handle_cast(_, State) ->
@@ -46,9 +46,11 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 % public functions
+-spec lookup(binary()) -> undefined | {ok, pid()}.
 lookup(CharacterID) ->
     gen_server:call(?MODULE, {lookup, CharacterID}).
 
+-spec spawn_character(binary()) -> ok.
 spawn_character(CharacterID) ->
     gen_server:cast(?MODULE, {spawn, CharacterID}).
 
