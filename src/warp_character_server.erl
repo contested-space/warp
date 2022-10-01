@@ -16,20 +16,23 @@ init(_) ->
     InitialState = #state{characters = []},
     {ok, InitialState}.
 
-handle_cast({spawn, CharacterID}, #state{characters = Characters} = State) when is_binary(CharacterID) ->
+handle_cast({spawn, CharacterID}, #state{characters = Characters} = State) when
+    is_binary(CharacterID)
+->
     CharacterPid = warp_character:spawn(CharacterID),
     {noreply, State#state{characters = [{CharacterID, CharacterPid} | Characters]}};
 handle_cast(_, State) ->
     {noreply, State}.
 
-handle_call({lookup, CharacterID}, _From, #state{characters = Characters} = State)
-    when is_binary(CharacterID) ->
+handle_call({lookup, CharacterID}, _From, #state{characters = Characters} = State) when
+    is_binary(CharacterID)
+->
     case proplists:get_value(CharacterID, Characters, undefined) of
-      undefined ->
-          % error atom feels weird here, especially when checked at spawning time
-          {reply, {error, character_not_found}, State};
-      {ok, _CharacterPid} = Res ->
-          {reply, Res, State}
+        undefined ->
+            % error atom feels weird here, especially when checked at spawning time
+            {reply, {error, character_not_found}, State};
+        {ok, _CharacterPid} = Res ->
+            {reply, Res, State}
     end;
 handle_call({lookup, _}, _From, State) ->
     {reply, {error, invalid_character_id}, State};
@@ -53,4 +56,3 @@ lookup(CharacterID) ->
 -spec spawn_character(binary()) -> ok.
 spawn_character(CharacterID) ->
     gen_server:cast(?MODULE, {spawn, CharacterID}).
-

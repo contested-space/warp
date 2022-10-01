@@ -23,11 +23,11 @@ handle_cast(_, State) ->
 
 handle_call({lookup, {_, _, _} = Pos}, _From, #state{space_objects = SpaceObjects} = State) ->
     case kd_tree:lookup(Pos, SpaceObjects) of
-      {error, key_not_found} ->
-          % error atom feels weird here, especially when checked at spawning time
-          {reply, {error, space_object_not_found}, State};
-      {ok, SpaceObjectPid} ->
-          {reply, {ok, SpaceObjectPid}, State}
+        {error, key_not_found} ->
+            % error atom feels weird here, especially when checked at spawning time
+            {reply, {error, space_object_not_found}, State};
+        {ok, SpaceObjectPid} ->
+            {reply, {ok, SpaceObjectPid}, State}
     end;
 handle_call({get_sphere, Coord, Radius}, _From, #state{space_objects = SpaceObjects} = State) ->
     Results = kd_tree:get_sphere(Coord, Radius, SpaceObjects),
@@ -65,16 +65,17 @@ populate(N) ->
 populate(0, Tree) ->
     Tree;
 populate(N, Tree) ->
-    try Coord = {rand:uniform(1000), rand:uniform(1000), rand:uniform(1000)},
+    try
+        Coord = {rand:uniform(1000), rand:uniform(1000), rand:uniform(1000)},
         {ok, Pid} = warp_space_object:spawn(Coord),
         Info = warp_space_object:get_state(Pid),
         io:format("Space object created: ~p~n", [Info]),
         NewTree = kd_tree:insert(Coord, Pid, Tree)
     of
-      _ ->
-          populate(N - 1, NewTree)
+        _ ->
+            populate(N - 1, NewTree)
     catch
-      _:_ -> % just retry when there is already something there
-          populate(N, Tree)
+        % just retry when there is already something there
+        _:_ ->
+            populate(N, Tree)
     end.
-

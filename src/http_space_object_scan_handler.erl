@@ -6,19 +6,25 @@
 
 init(Req0, State) ->
     % EEEEWWW. TODO: anything but that, really. This needs to be properly validated
-    Coord = {binary_to_integer(cowboy_req:binding(x, Req0, undefined)),
-             binary_to_integer(cowboy_req:binding(y, Req0, undefined)),
-             binary_to_integer(cowboy_req:binding(z, Req0, undefined))},
+    Coord = {
+        binary_to_integer(cowboy_req:binding(x, Req0, undefined)),
+        binary_to_integer(cowboy_req:binding(y, Req0, undefined)),
+        binary_to_integer(cowboy_req:binding(z, Req0, undefined))
+    },
     Radius = binary_to_integer(cowboy_req:binding(r, Req0, undefined)),
 
     SpaceObjects = scan(Coord, Radius),
-    BinaryCoordsSpaceObjects = [<<(integer_to_binary(X))/binary,
-                                  "/",
-                                  (integer_to_binary(Y))/binary,
-                                  "/",
-                                  (integer_to_binary(Z))/binary,
-                                  "\n">>
-                                || {{X, Y, Z}, _Pid} <- SpaceObjects],
+    BinaryCoordsSpaceObjects = [
+        <<
+            (integer_to_binary(X))/binary,
+            "/",
+            (integer_to_binary(Y))/binary,
+            "/",
+            (integer_to_binary(Z))/binary,
+            "\n"
+        >>
+     || {{X, Y, Z}, _Pid} <- SpaceObjects
+    ],
     Req = cowboy_req:reply(200, #{}, BinaryCoordsSpaceObjects, Req0),
     {ok, Req, State}.
 
@@ -35,5 +41,4 @@ scan(Coord, Radius) ->
     {ok, Results} = warp_space_object_server:get_sphere(Coord, Radius),
     Results.
 
-
-    %[warp_space_object:get_state(Pid) || {_, Pid} <- Results].
+%[warp_space_object:get_state(Pid) || {_, Pid} <- Results].

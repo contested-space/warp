@@ -26,12 +26,14 @@
 % parameters (to allow for storage of characters and respawning of their
 % processes)
 init([CharacterId]) ->
-    InitialState = #{id => CharacterId,
-                     time_of_birth => erlang:system_time(),
-                     current_task => idling,
-                     leader => none,
-                     followers => [],
-                     resources => []},
+    InitialState = #{
+        id => CharacterId,
+        time_of_birth => erlang:system_time(),
+        current_task => idling,
+        leader => none,
+        followers => [],
+        resources => []
+    },
     {ok, InitialState}.
 
 handle_cast(_, State) ->
@@ -56,4 +58,3 @@ spawn(CharacterId) ->
 
 get_state(CharacterPid) ->
     gen_server:call(CharacterPid, get_state).
-

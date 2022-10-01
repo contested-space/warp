@@ -26,26 +26,31 @@ start_link() ->
 %%                  modules => modules()}   % optional
 init([]) ->
     SupFlags = #{strategy => one_for_all, intensity => 0, period => 1},
-    CharacterServer = #{id => warp_character_server,
-                        start => {warp_character_server, start_link, []},
-                        shutdown => 2000,
-                        restart => permanent,
-                        type => worker,
-                        modules => [warp_character_server]},
-    SpaceObjectServer = #{id => warp_space_object_server,
-                          start => {warp_space_object_server, start_link, []},
-                          shutdown => 2000,
-                          restart => permanent,
-                          type => worker,
-                          modules => [warp_space_object_server]},
-    ShipServer = #{id => warp_ship_server,
-                          start => {warp_ship_server, start_link, []},
-                          shutdown => 2000,
-                          restart => permanent,
-                          type => worker,
-                          modules => [warp_ship_server]},
+    CharacterServer = #{
+        id => warp_character_server,
+        start => {warp_character_server, start_link, []},
+        shutdown => 2000,
+        restart => permanent,
+        type => worker,
+        modules => [warp_character_server]
+    },
+    SpaceObjectServer = #{
+        id => warp_space_object_server,
+        start => {warp_space_object_server, start_link, []},
+        shutdown => 2000,
+        restart => permanent,
+        type => worker,
+        modules => [warp_space_object_server]
+    },
+    ShipServer = #{
+        id => warp_ship_server,
+        start => {warp_ship_server, start_link, []},
+        shutdown => 2000,
+        restart => permanent,
+        type => worker,
+        modules => [warp_ship_server]
+    },
     ChildSpecs = [CharacterServer, SpaceObjectServer, ShipServer],
     {ok, {SupFlags, ChildSpecs}}.
-
 
 %% internal functions
