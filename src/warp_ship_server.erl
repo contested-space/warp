@@ -1,5 +1,6 @@
 -module(warp_ship_server).
 -include("warp.hrl").
+-include("names.hrl").
 
 -export([init/1, handle_cast/2, handle_call/3, handle_info/2, terminate/2, code_change/3]).
 -export([start_link/0]).

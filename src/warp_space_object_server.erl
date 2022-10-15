@@ -38,7 +38,7 @@ handle_call(_, _From, State) ->
     {reply, {error, undefined_call}, State}.
 
 handle_info(populate, State) ->
-    SpaceObjects = populate(10000),
+    SpaceObjects = populate(45000),
     {noreply, State#state{space_objects = SpaceObjects}};
 handle_info(_, State) ->
     {noreply, State}.
@@ -66,10 +66,10 @@ populate(0, Tree) ->
     Tree;
 populate(N, Tree) ->
     try
-        Coord = {rand:uniform(1000), rand:uniform(1000), rand:uniform(1000)},
+        Coord = {rand:uniform(200) - 100, rand:uniform(200) - 100, rand:uniform(200) - 100},
         {ok, Pid} = warp_space_object:spawn(Coord),
         Info = warp_space_object:get_state(Pid),
-        io:format("Space object created: ~p~n", [Info]),
+        %io:format("Space object created: ~p~n", [Info]),
         NewTree = kd_tree:insert(Coord, Pid, Tree)
     of
         _ ->

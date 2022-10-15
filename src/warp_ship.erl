@@ -1,21 +1,15 @@
 -module(warp_ship).
 
 -include("warp.hrl").
+-include("ship.hrl").
 
 -behaviour(gen_server).
 
 -export([init/1, handle_cast/2, handle_call/3, handle_info/2, terminate/2, code_change/3]).
 -export([spawn/2, get_state/1, move_to/2, scan/0]).
 
--record(state, {
-    id :: binary(),
-    position :: coord(),
-    scanner_range = 5 :: non_neg_integer(),
-    destination = stopped :: coord() | stopped
-}).
-
 init([Id, Position]) ->
-    InitialState = #state{id = Id, position = Position},
+    InitialState = #ship_state{id = Id, position = Position},
     {ok, InitialState}.
 
 handle_cast(_, State) ->
@@ -23,6 +17,9 @@ handle_cast(_, State) ->
 
 handle_call(get_state, _From, State) ->
     {reply, State, State};
+handle_call({move_to, {X0, Y0, Z0} = Coord}, _From, #ship_state{position = {X1, Y1, Z1}} = State) ->
+    Distance = math:sqrt(math:pow((X1 - X0), 2) + math:pow((Y1 - Y0), 2) + math:pow((Z1 - Z0), 2)),
+    {reply, {ok, Distance}, State#ship_state{position = Coord}};
 handle_call(_, _From, State) ->
     {reply, {error, undefined_call}, State}.
 

@@ -1,4 +1,5 @@
 -module(warp_space_object).
+-include("names.hrl").
 
 -behaviour(gen_server).
 
@@ -6,54 +7,6 @@
 -export([spawn/1, get_state/1]).
 
 %% TODO: have these names come from ingesting config files
--define(LETTERS, [
-    <<"Alpha">>,
-    <<"Beta">>,
-    <<"Gamma">>,
-    <<"Delta">>,
-    <<"Epsilon">>,
-    <<"Varepsilon">>,
-    <<"Zeta">>,
-    <<"Eta">>,
-    <<"Theta">>,
-    <<"Iota">>,
-    <<"Kappa">>,
-    <<"Lambda">>,
-    <<"Mu">>,
-    <<"Nu">>,
-    <<"Xi">>,
-    <<"Omicron">>,
-    <<"Pi">>,
-    <<"Rho">>,
-    <<"Sigma">>,
-    <<"Tau">>,
-    <<"Upsilon">>,
-    <<"Phi">>,
-    <<"Varphi">>,
-    <<"Chi">>,
-    <<"Psi">>,
-    <<"Omega">>
-]).
--define(NAMES, [
-    <<"Andromeda">>,
-    <<"Antila">>,
-    <<"Apus">>,
-    <<"Aquarius">>,
-    <<"Aquila">>,
-    <<"Ara">>,
-    <<"Aries">>,
-    <<"Auriga">>,
-    <<"Bootes">>,
-    <<"Caelum">>,
-    <<"Camelopardalis">>,
-    <<"Canes Venatici">>,
-    <<"Canis Major">>,
-    <<"Canis Minor">>,
-    <<"Capricornus">>,
-    <<"Carina">>,
-    <<"Cassiopeia">>,
-    <<"Centauri">>
-]).
 
 -record(state, {
     name :: binary(),
@@ -68,7 +21,7 @@ init([Position]) ->
     {Letter, Name} =
         case {length(?LETTERS), length(?NAMES)} of
             {N, M} when N > 0 andalso M > 0 ->
-                {lists:nth(rand:uniform(N), ?LETTERS), lists:nth(rand:uniform(N), ?NAMES)};
+                {lists:nth(rand:uniform(N), ?LETTERS), lists:nth(rand:uniform(M), ?NAMES)};
             _ ->
                 error(<<"Invalid LETTERS or NAMES list">>)
         end,
